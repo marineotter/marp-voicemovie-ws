@@ -10,3 +10,5 @@
 - [Marp](https://marp.app/)
 - [VOICEVOX](https://voicevox.hiroshiba.jp/)
     - デフォルトでのボイス： [VOICEVOX:ずんだもん](https://zunko.jp/con_ongen_kiyaku.html)
+
+※ 本ワークスペースを用いた成果物を利用する際には、各OSSのライセンスに従ってください。特にVOICEVOXの音声を利用する場合は、VOICEVOXの利用規約に従ってください。
