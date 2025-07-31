@@ -10,17 +10,7 @@ services:
     command: sleep infinity
     depends_on:
       - voicevox
-      - ollama
 
   voicevox:
     image: voicevox/voicevox_engine:cpu-latest
     restart: unless-stopped
-  
-  ollama:
-    image: ollama/ollama:latest
-    restart: unless-stopped
-    volumes:
-      - ollama-data:/root/.ollama
-
-volumes:
-  ollama-data:
