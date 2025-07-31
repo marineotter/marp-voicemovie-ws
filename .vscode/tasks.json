@@ -1,0 +1,56 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Marp Note to Voice",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"/scripts/marp_note_to_voice.py",
+				"/workspace/slide.md",
+				"--output-dir",
+				"/workspace/dist"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Marp Page to Images",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"/scripts/marp_page_to_images.py",
+				"/workspace/slide.md",
+				"--output-dir",
+				"/workspace/dist"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Convert to Movie",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"/scripts/convert_to_movie.py",
+				"/workspace/dist",
+				"--output",
+				"/workspace/dist/presentation.mp4"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"dependsOn": ["Generate Marp All (Voice + Images)"]
+		},
+		{
+			"label": "Generate Marp All (Voice + Images)",
+			"dependsOrder": "parallel",
+			"dependsOn": ["Marp Note to Voice", "Marp Page to Images"]
+		},
+		{
+			"label": "Generate Complete Presentation",
+			"dependsOrder": "sequence",
+			"dependsOn": ["Generate Marp All (Voice + Images)", "Convert to Movie"],
+			"group": "build"
+		}
+	]
+}
