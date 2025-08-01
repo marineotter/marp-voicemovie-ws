@@ -11,10 +11,10 @@
 
 - [Marp](https://marp.app/)
 - [VOICEVOX](https://voicevox.hiroshiba.jp/)
-    - デフォルトでのボイス： [VOICEVOX:ずんだもん](https://zunko.jp/con_ongen_kiyaku.html)
+    - デフォルトでのボイス： [VOICEVOX:四国めたん](https://zunko.jp/con_ongen_kiyaku.html)
 
-※ 本ワークスペースを用いた成果物を利用する際には、各OSSのライセンスに従ってください。特にVOICEVOXの音声を利用する場合は、VOICEVOXの利用規約に従ってください。
-
+> [!WARNING]
+> 本ワークスペースを用いた成果物を利用する際には、各OSSのライセンスに従ってください。特にVOICEVOXの利用規約に注意してください。
 ## つかいかた
 
 このフォルダをVS Codeで開き、開発コンテナを起動します。
