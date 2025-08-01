@@ -21,7 +21,7 @@
 
 slide.md にスライドを作成します。
 
-Ctrl + Shift + P を押してコマンドパレットを開き、「Tasks: Run Build Task」を選択します。  
+slide.md をVS Codeで開いた状態で、Ctrl + Shift + P を押してコマンドパレットを開き、「Tasks: Run Build Task」を選択します。  
 （または、 Ctrl + Shift + B を押します。）
 
 dist フォルダに、生成された音声ファイルや画像ファイル、動画ファイルが出力されます。
