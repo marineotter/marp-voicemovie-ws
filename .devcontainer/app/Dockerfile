@@ -10,6 +10,7 @@ RUN apt-get update && \
     wget \
     gnupg \
     ca-certificates \
+    git \
     && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -63,7 +64,6 @@ RUN pip3 install --break-system-packages --user moviepy opencv-python pillow
 USER root
 RUN mkdir -p /scripts && chmod 755 /scripts
 COPY marp_note_to_voice.py /scripts/marp_note_to_voice.py
-COPY marp_pages_to_images.py /scripts/marp_page_to_images.py
 COPY convert_to_movie.py /scripts/convert_to_movie.py
 RUN chmod +x /scripts/*.py
 

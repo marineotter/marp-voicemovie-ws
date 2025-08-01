@@ -146,7 +146,9 @@ class SlideVideoGenerator:
                       fps: int = 24,
                       resolution: Optional[Tuple[int, int]] = None,
                       codec: str = 'libx264',
-                      audio_codec: str = 'aac') -> Path:
+                      audio_codec: str = 'aac',
+                      pause_before: float = 0.75,
+                      pause_after: float = 0.75) -> Path:
         """
         全スライドを結合して動画を生成
         
@@ -156,6 +158,8 @@ class SlideVideoGenerator:
             resolution: 解像度 (width, height)。Noneの場合は元画像サイズ
             codec: 動画コーデック
             audio_codec: 音声コーデック
+            pause_before: 各スライドの前に追加する間隔（秒）
+            pause_after: 各スライドの後に追加する間隔（秒）
             
         Returns:
             生成された動画ファイルのパス
@@ -178,6 +182,16 @@ class SlideVideoGenerator:
                 if self.verbose:
                     print(f"\n[{i+1}/{len(slide_pairs)}] 処理中...")
                 
+                # 前の間隔を追加（最初のスライドには追加しない）
+                if i > 0 and pause_before > 0:
+                    pause_clip = ImageClip(str(image_file), duration=pause_before)
+                    if resolution:
+                        pause_clip = pause_clip.resized(resolution)
+                    clips.append(pause_clip)
+                    total_duration += pause_before
+                    if self.verbose:
+                        print(f"  前間隔: {pause_before}秒")
+                
                 clip = self.create_slide_clip(image_file, audio_file)
                 
                 # 解像度調整
@@ -186,6 +200,16 @@ class SlideVideoGenerator:
                 
                 clips.append(clip)
                 total_duration += clip.duration
+                
+                # 後の間隔を追加（最後のスライドには追加しない）
+                if i < len(slide_pairs) - 1 and pause_after > 0:
+                    pause_clip = ImageClip(str(image_file), duration=pause_after)
+                    if resolution:
+                        pause_clip = pause_clip.resized(resolution)
+                    clips.append(pause_clip)
+                    total_duration += pause_after
+                    if self.verbose:
+                        print(f"  後間隔: {pause_after}秒")
             
             if self.verbose:
                 print(f"\n全スライド処理完了。総時間: {total_duration:.2f}秒")
@@ -234,7 +258,9 @@ def create_config_template(config_path: str):
             "fps": 24,
             "resolution": None,  # [1920, 1080] for 1080p, None for original
             "codec": "libx264",
-            "audio_codec": "aac"
+            "audio_codec": "aac",
+            "pause_before": 0.75,  # 各スライドの前の間隔（秒）
+            "pause_after": 0.75    # 各スライドの後の間隔（秒）
         },
         "input_settings": {
             "image_extensions": [".png", ".jpg", ".jpeg"],
@@ -258,6 +284,7 @@ def main():
   python convert_to_movie.py ./dist
   python convert_to_movie.py ./dist --output my_presentation.mp4
   python convert_to_movie.py ./dist --fps 30 --resolution 1920 1080
+  python convert_to_movie.py ./dist --pause-before 1.0 --pause-after 0.5
   python convert_to_movie.py --create-config config.json
         """
     )
@@ -274,6 +301,10 @@ def main():
                        help='動画コーデック (デフォルト: libx264)')
     parser.add_argument('--audio-codec', default='aac',
                        help='音声コーデック (デフォルト: aac)')
+    parser.add_argument('--pause-before', type=float, default=0.75,
+                       help='各スライドの前に追加する間隔（秒） (デフォルト: 0.75)')
+    parser.add_argument('--pause-after', type=float, default=0.75,
+                       help='各スライドの後に追加する間隔（秒） (デフォルト: 0.75)')
     parser.add_argument('-q', '--quiet', action='store_true',
                        help='詳細ログを非表示')
     parser.add_argument('--create-config', metavar='CONFIG_FILE',
@@ -303,7 +334,9 @@ def main():
             fps=args.fps,
             resolution=resolution,
             codec=args.codec,
-            audio_codec=args.audio_codec
+            audio_codec=args.audio_codec,
+            pause_before=args.pause_before,
+            pause_after=args.pause_after
         )
         
         print(f"\n✅ 動画生成が完了しました: {output_file}")

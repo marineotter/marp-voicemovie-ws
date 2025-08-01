@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-Marpスライドのコメントをずんだもんボイスで音声変換するスクリプト
+MarpスライドのコメントをVOICEVOXで音声変換するスクリプト
 
 このスクリプトは：
 1. slide.mdファイルからコメント（<!-- -->で囲まれた部分）を抽出
-2. VOICEVOXコンテナのAPIを使用してずんだもんボイスで音声合成
+2. VOICEVOXコンテナのAPIを使用して音声合成
 3. ページごとの音声ファイル（WAV形式）として出力
 
 使用方法:
-    python marp_note_to_voice.py [スライドファイル] [--output-dir 出力ディレクトリ]
+    python marp_note_to_voice.py [スライドファイル] [--output-dir 出力ディレクトリ] [--speaker-id スピーカーID]
 """
 
 import re
@@ -21,16 +21,17 @@ from typing import List, Tuple
 
 
 class MarpToVoice:
-    def __init__(self, voicevox_url: str = "http://voicevox:50021", output_dir: str = "/workspace/output"):
+    def __init__(self, voicevox_url: str = "http://voicevox:50021", output_dir: str = "/workspace/output", speaker_id: int = 3):
         """
         初期化
         
         Args:
             voicevox_url: VOICEVOXエンジンのURL
             output_dir: 出力ディレクトリのパス
+            speaker_id: VOICEVOXのスピーカーID（デフォルト: 3 = ずんだもん）
         """
         self.voicevox_url = voicevox_url
-        self.zundamon_speaker_id = 3  # ずんだもんのスピーカーID
+        self.speaker_id = speaker_id
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
         
@@ -96,7 +97,7 @@ class MarpToVoice:
             print(f"ページ {page_num}: 音声クエリを生成中...")
             audio_query_response = requests.post(
                 f"{self.voicevox_url}/audio_query",
-                params={"text": text, "speaker": self.zundamon_speaker_id},
+                params={"text": text, "speaker": self.speaker_id},
                 timeout=30
             )
             
@@ -110,7 +111,7 @@ class MarpToVoice:
             print(f"ページ {page_num}: 音声合成中...")
             synthesis_response = requests.post(
                 f"{self.voicevox_url}/synthesis",
-                params={"speaker": self.zundamon_speaker_id},
+                params={"speaker": self.speaker_id},
                 headers={"Content-Type": "application/json"},
                 data=json.dumps(audio_query),
                 timeout=60
@@ -166,7 +167,7 @@ class MarpToVoice:
         Args:
             slide_path: スライドファイルのパス
         """
-        print("=== Marpスライド → ずんだもんボイス変換開始 ===")
+        print("=== Marpスライド → VOICEVOX音声変換開始 ===")
         
         # VOICEVOXサーバーとの接続確認
         if not self.check_voicevox_connection():
@@ -210,7 +211,7 @@ class MarpToVoice:
 def main():
     """メイン関数"""
     parser = argparse.ArgumentParser(
-        description="Marpスライドのコメントをずんだもんボイスで音声変換するスクリプト"
+        description="MarpスライドのコメントをVOICEVOXで音声変換するスクリプト"
     )
     parser.add_argument(
         "slide_file",
@@ -223,10 +224,16 @@ def main():
         default="/workspace/output",
         help="出力ディレクトリのパス (デフォルト: /workspace/output)"
     )
+    parser.add_argument(
+        "--speaker-id",
+        type=int,
+        default=3,
+        help="VOICEVOXのスピーカーID (デフォルト: 3 = ずんだもん)"
+    )
     
     args = parser.parse_args()
     
-    converter = MarpToVoice(output_dir=args.output_dir)
+    converter = MarpToVoice(output_dir=args.output_dir, speaker_id=args.speaker_id)
     converter.process_slide(args.slide_file)
 
 
