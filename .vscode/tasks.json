@@ -48,6 +48,8 @@
 				"0.75",
 				"--pause-after",
 				"0.75",
+				"--preset",
+				"ultrafast"
 			],
 			"isBackground": false,
 			"problemMatcher": [],

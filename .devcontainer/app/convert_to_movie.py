@@ -147,6 +147,7 @@ class SlideVideoGenerator:
                       resolution: Optional[Tuple[int, int]] = None,
                       codec: str = 'libx264',
                       audio_codec: str = 'aac',
+                      preset: str = 'ultrafast',
                       pause_before: float = 0.75,
                       pause_after: float = 0.75) -> Path:
         """
@@ -158,6 +159,7 @@ class SlideVideoGenerator:
             resolution: 解像度 (width, height)。Noneの場合は元画像サイズ
             codec: 動画コーデック
             audio_codec: 音声コーデック
+            preset: エンコードプリセット（ultrafast, superfast, veryfast, faster, fast, medium, slow, slower, veryslow）
             pause_before: 各スライドの前に追加する間隔（秒）
             pause_after: 各スライドの後に追加する間隔（秒）
             
@@ -227,6 +229,7 @@ class SlideVideoGenerator:
                 str(output_path),
                 fps=fps,
                 codec=codec,
+                preset=preset,
                 audio_codec=audio_codec,
             )
             
@@ -259,6 +262,7 @@ def create_config_template(config_path: str):
             "resolution": None,  # [1920, 1080] for 1080p, None for original
             "codec": "libx264",
             "audio_codec": "aac",
+            "preset": "ultrafast",  # エンコードプリセット
             "pause_before": 0.75,  # 各スライドの前の間隔（秒）
             "pause_after": 0.75    # 各スライドの後の間隔（秒）
         },
@@ -284,7 +288,7 @@ def main():
   python convert_to_movie.py ./dist
   python convert_to_movie.py ./dist --output my_presentation.mp4
   python convert_to_movie.py ./dist --fps 30 --resolution 1920 1080
-  python convert_to_movie.py ./dist --pause-before 1.0 --pause-after 0.5
+  python convert_to_movie.py ./dist --preset medium --pause-before 1.0 --pause-after 0.5
   python convert_to_movie.py --create-config config.json
         """
     )
@@ -301,6 +305,9 @@ def main():
                        help='動画コーデック (デフォルト: libx264)')
     parser.add_argument('--audio-codec', default='aac',
                        help='音声コーデック (デフォルト: aac)')
+    parser.add_argument('--preset', default='ultrafast',
+                       choices=['ultrafast', 'superfast', 'veryfast', 'faster', 'fast', 'medium', 'slow', 'slower', 'veryslow'],
+                       help='エンコードプリセット (デフォルト: ultrafast)')
     parser.add_argument('--pause-before', type=float, default=0.75,
                        help='各スライドの前に追加する間隔（秒） (デフォルト: 0.75)')
     parser.add_argument('--pause-after', type=float, default=0.75,
@@ -335,6 +342,7 @@ def main():
             resolution=resolution,
             codec=args.codec,
             audio_codec=args.audio_codec,
+            preset=args.preset,
             pause_before=args.pause_before,
             pause_after=args.pause_after
         )
