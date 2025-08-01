@@ -14,8 +14,7 @@
 				"2" // 四国めたん
 			],
 			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
+			"problemMatcher": []
 		},
 		{
 			"label": "Marp Page to Images",
@@ -34,8 +33,7 @@
 				"${file}"
 			],
 			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
+			"problemMatcher": []
 		},
 		{
 			"label": "Convert to Movie",
@@ -53,20 +51,21 @@
 			],
 			"isBackground": false,
 			"problemMatcher": [],
-			"dependsOn": ["Generate Voice + Images"],
-			"group": "build"
+			"dependsOn": ["Generate Voice + Images"]
 		},
 		{
 			"label": "Generate Voice + Images",
 			"dependsOrder": "parallel",
-			"dependsOn": ["Marp Note to Voice", "Marp Page to Images"],
-			"group": "build"
+			"dependsOn": ["Marp Note to Voice", "Marp Page to Images"]
 		},
 		{
 			"label": "Generate Movie (Build All)",
 			"dependsOrder": "sequence",
 			"dependsOn": ["Generate Voice + Images", "Convert to Movie"],
-			"group": "build"
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }
